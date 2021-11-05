@@ -5,12 +5,13 @@ namespace KnapsackProblem
 {
     public class Knapsack
     {
-        private List<Item> Items;
-        public int Weight => Items.Sum(item => item.Weight);
+        private List<Item> _items;
+        public int Weight => _items.Sum(item => item.Weight);
+        public int Value => _items.Sum(item => item.Value);
 
         public Knapsack(List<Item> items)
         {
-            Items = items;
+            _items = items;
         }
     }
 }
