@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace KnapsackProblem
@@ -10,6 +11,7 @@ namespace KnapsackProblem
         private readonly int _capacity;
         private List<Chromosome> _population;
         private int _bestValue;
+        private List<Tuple<int, int>> _statistics;
 
         public GeneticAlgorithm(List<Item> items, int capacity)
         {
@@ -17,6 +19,7 @@ namespace KnapsackProblem
             _capacity = capacity;
             _population = new List<Chromosome>();
             _bestValue = 0;
+            _statistics = new List<Tuple<int, int>>();
         }
 
         public Knapsack Solve()
@@ -36,6 +39,11 @@ namespace KnapsackProblem
             for (int generationCounter = 0; generationCounter < 1000; generationCounter++)
             {
                 _bestValue = ToKnapsack(_population.Last()).Value;
+
+                if (generationCounter % 20 == 0)
+                {
+                    _statistics.Add(Tuple.Create<int, int>(generationCounter, _bestValue));
+                }
                 
                 Tuple<int, int> parentsPair = ChooseParents();
                 var firstParent = _population[parentsPair.Item1];
@@ -89,6 +97,17 @@ namespace KnapsackProblem
             }
 
             return ToKnapsack(_population.Last());
+        }
+
+        public void GetStatisticsToFile(string path)
+        {
+            var writer = new StreamWriter(path);
+            foreach (Tuple<int, int> pair in _statistics)
+            {
+                string line = $"{pair.Item1},{pair.Item2}";
+                writer.WriteLine(line);
+            }
+            writer.Close();
         }
 
         private Knapsack ToKnapsack(Chromosome chromosome)

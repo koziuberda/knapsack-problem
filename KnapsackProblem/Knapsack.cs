@@ -5,7 +5,7 @@ namespace KnapsackProblem
 {
     public class Knapsack
     {
-        private List<Item> _items;
+        private readonly List<Item> _items;
         public int Weight => _items.Sum(item => item.Weight);
         public int Value => _items.Sum(item => item.Value);
 
@@ -13,5 +13,7 @@ namespace KnapsackProblem
         {
             _items = items;
         }
+
+        public List<Item> Items => _items;
     }
 }
