@@ -36,10 +36,18 @@ namespace KnapsackProblem
             // It's nice to work with sorted list
             _population = _population.OrderBy(chromosome => ToKnapsack(chromosome).Value).ToList();
             
-            for (int generationCounter = 0; generationCounter < 1000; generationCounter++)
+            // Probability in percent
+            const int mutationProbability = 5;
+            const int scaledProbability = (int) (100 / mutationProbability);
+            
+            // It should be enough
+            const int maxGenerations = 1000;
+            
+            for (int generationCounter = 0; generationCounter < maxGenerations; generationCounter++)
             {
                 _bestValue = ToKnapsack(_population.Last()).Value;
 
+                // Statistics are collected every 20 iterations
                 if (generationCounter % 20 == 0)
                 {
                     _statistics.Add(Tuple.Create<int, int>(generationCounter, _bestValue));
@@ -55,7 +63,7 @@ namespace KnapsackProblem
 
                 var random = new Random();
 
-                if (random.Next(20) == 0)
+                if (random.Next(scaledProbability) == 0)
                 {
                     var firstMutant = Mutation(firstChild);
                     if (ToKnapsack(firstMutant).Weight <= _capacity)
@@ -64,7 +72,7 @@ namespace KnapsackProblem
                     }
                 }
 
-                if (random.Next(20) == 0)
+                if (random.Next(scaledProbability) == 0)
                 {
                     var secondMutant = Mutation(secondChild);
                     if (ToKnapsack(secondMutant).Weight <= _capacity)

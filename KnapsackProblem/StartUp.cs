@@ -19,6 +19,11 @@ namespace KnapsackProblem
             Console.WriteLine("0 - generate items randomly");
             Console.WriteLine("1 - input from file");
             char ch = Convert.ToChar(Console.ReadLine());
+            
+            JsonSerializerOptions options = new(JsonSerializerDefaults.Web)
+            {
+                WriteIndented = true
+            };
 
             if (ch == '0')
             {
@@ -32,7 +37,7 @@ namespace KnapsackProblem
                 Console.WriteLine("Please, input path to file: ");
                 var pathToFile = Console.ReadLine();
                 var text = File.ReadAllText(pathToFile);
-                items = JsonSerializer.Deserialize<List<Item>>(text);
+                items = JsonSerializer.Deserialize<List<Item>>(text, options);
             }
             else
             {
@@ -49,12 +54,14 @@ namespace KnapsackProblem
 
             List<Item> chosenItems = solution.Items;
             
-            var chosenItemsJson = JsonSerializer.Serialize(chosenItems);
+            
+            
+            var chosenItemsJson = JsonSerializer.Serialize(chosenItems, options);
 
             Directory.CreateDirectory("Results");
             File.WriteAllText(@"Results\knapsack.json",chosenItemsJson);
             
-            var allItemsSerialized = JsonSerializer.Serialize(items);
+            var allItemsSerialized = JsonSerializer.Serialize(items, options);
             File.WriteAllText(@"Results\items.json",allItemsSerialized);
             
             solver.GetStatisticsToFile(@"Results\statistics.csv");
